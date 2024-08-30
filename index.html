@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Three.js Reflective Sphere with GUI</title>
+    <title>Three.js Reflective Sphere with Orbit Controls</title>
     <style>
         body { margin: 0; }
         canvas { display: block; }
     </style>
 </head>
 <body>
-    <!-- Include Three.js and dat.GUI libraries -->
+    <!-- Include Three.js and OrbitControls -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/controls/OrbitControls.js"></script>
 
     <script>
-        // Ensure Three.js and dat.GUI are included
-        if (!THREE || !dat) {
-            alert("Three.js or dat.GUI library is not loaded.");
+        // Ensure Three.js is included
+        if (!THREE) {
+            alert("Three.js library is not loaded.");
         }
 
         // Create the scene, camera, and renderer
@@ -65,30 +65,10 @@
         light.position.set(1000, 1000, 1000);
         scene.add(light);
 
-        // Create GUI controls
-        const gui = new dat.GUI();
-        const controls = {
-            horizontalRotation: 0,
-            verticalRotation: 0
-        };
-
-        // Add GUI controls
-        gui.add(controls, 'horizontalRotation', -Math.PI, Math.PI).name('Horizontal Rotation').onChange(updateCameraPosition);
-        gui.add(controls, 'verticalRotation', -Math.PI / 2, Math.PI / 2).name('Vertical Rotation').onChange(updateCameraPosition);
-
-        // Update camera position based on GUI
-        function updateCameraPosition() {
-            // Calculate spherical coordinates to Cartesian coordinates
-            const x = radius * Math.cos(controls.verticalRotation) * Math.cos(controls.horizontalRotation);
-            const y = radius * Math.sin(controls.verticalRotation);
-            const z = radius * Math.cos(controls.verticalRotation) * Math.sin(controls.horizontalRotation);
-            
-            camera.position.set(x, y, z);
-            camera.lookAt(scene.position);
-        }
-
-        // Initial call to set the camera position
-        updateCameraPosition();
+        // Add OrbitControls to allow mouse interaction
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.target.set(0, 0, 0); // The center of the sphere
+        controls.update(); // Ensure the controls are updated
 
         // Render the scene
         function animate() {
