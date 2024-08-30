@@ -3,21 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Three.js Reflective Sphere with Orbit Controls</title>
+    <title>Three.js Fullscreen Toggle</title>
     <style>
-        body { margin: 0; }
-        canvas { display: block; }
+        body { margin: 0; overflow: hidden; }
+        #three-container { width: 100vw; height: 100vh; }
     </style>
 </head>
 <body>
-    <!-- Include Three.js and OrbitControls -->
+    <div id="three-container"></div>
+    
+    <!-- Three.js library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- OrbitControls library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/controls/OrbitControls.js"></script>
-
+    
+    <!-- dat.GUI library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script>
+    
     <script>
-        // Ensure Three.js is included
-        if (!THREE) {
-            alert("Three.js library is not loaded.");
+        // Ensure Three.js and OrbitControls are included
+        if (!THREE || !THREE.OrbitControls) {
+            console.error("Three.js or OrbitControls library is not loaded.");
         }
 
         // Create the scene, camera, and renderer
@@ -25,7 +32,7 @@
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
         const renderer = new THREE.WebGLRenderer();
         renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(renderer.domElement);
+        document.getElementById('three-container').appendChild(renderer.domElement);
 
         // Create a cube map texture using BMP images
         const cubeTextureLoader = new THREE.CubeTextureLoader();
@@ -55,7 +62,7 @@
         const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
         scene.add(sphere);
 
-        // Set up initial camera position and target
+        // Set up initial camera position
         const radius = 1000; // Distance from the center of the sphere
         camera.position.set(radius, 0, 0);
         camera.lookAt(scene.position);
@@ -65,10 +72,23 @@
         light.position.set(1000, 1000, 1000);
         scene.add(light);
 
-        // Add OrbitControls to allow mouse interaction
+        // Initialize OrbitControls
         const controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls.target.set(0, 0, 0); // The center of the sphere
         controls.update(); // Ensure the controls are updated
+
+        // Create GUI for fullscreen toggle
+        const gui = new dat.GUI();
+        const fullscreenControls = {
+            toggleFullscreen: function () {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(err => console.error("Error attempting to enable fullscreen mode:", err));
+                } else {
+                    document.exitFullscreen().catch(err => console.error("Error attempting to exit fullscreen mode:", err));
+                }
+            }
+        };
+        gui.add(fullscreenControls, 'toggleFullscreen').name('Toggle Fullscreen');
 
         // Render the scene
         function animate() {
