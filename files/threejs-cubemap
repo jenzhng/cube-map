@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three.js Reflective Sphere with GUI</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <!-- Include Three.js and dat.GUI libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script>
+
+    <script>
+        // Ensure Three.js and dat.GUI are included
+        if (!THREE || !dat) {
+            alert("Three.js or dat.GUI library is not loaded.");
+        }
+
+        // Create the scene, camera, and renderer
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Create a cube map texture using BMP images
+        const cubeTextureLoader = new THREE.CubeTextureLoader();
+        const cubeTexture = cubeTextureLoader.load([
+            'https://raw.githubusercontent.com/jenzhng/cube-map/main/files/nvposx.bmp', // positive x
+            'https://raw.githubusercontent.com/jenzhng/cube-map/main/files/nvnegx.bmp', // negative x
+            'https://raw.githubusercontent.com/jenzhng/cube-map/main/files/nvposy.bmp', // positive y
+            'https://raw.githubusercontent.com/jenzhng/cube-map/main/files/nvnegy.bmp', // negative y
+            'https://raw.githubusercontent.com/jenzhng/cube-map/main/files/nvposz.bmp', // positive z
+            'https://raw.githubusercontent.com/jenzhng/cube-map/main/files/nvnegz.bmp'  // negative z
+        ], undefined, undefined, (err) => {
+            console.error("An error occurred while loading the textures:", err);
+        });
+
+        // Set the scene background to the cube map texture
+        scene.background = cubeTexture;
+
+        // Create a reflective sphere
+        const sphereGeometry = new THREE.SphereGeometry(500, 64, 32); // Large sphere to encompass the scene
+        const sphereMaterial = new THREE.MeshStandardMaterial({
+            color: 0xffffff,
+            envMap: cubeTexture,
+            metalness: 1.0, // High metalness for a reflective effect
+            roughness: 0.0, // Low roughness for high reflectivity
+            side: THREE.FrontSide // Render the outside of the sphere
+        });
+        const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+        scene.add(sphere);
+
+        // Set up initial camera position and target
+        const radius = 1000; // Distance from the center of the sphere
+        camera.position.set(radius, 0, 0);
+        camera.lookAt(scene.position);
+
+        // Add a point light to illuminate the sphere
+        const light = new THREE.PointLight(0xffffff, 1, 10000);
+        light.position.set(1000, 1000, 1000);
+        scene.add(light);
+
+        // Create GUI controls
+        const gui = new dat.GUI();
+        const controls = {
+            horizontalRotation: 0,
+            verticalRotation: 0
+        };
+
+        // Add GUI controls
+        gui.add(controls, 'horizontalRotation', -Math.PI, Math.PI).name('Horizontal Rotation').onChange(updateCameraPosition);
+        gui.add(controls, 'verticalRotation', -Math.PI / 2, Math.PI / 2).name('Vertical Rotation').onChange(updateCameraPosition);
+
+        // Update camera position based on GUI
+        function updateCameraPosition() {
+            // Calculate spherical coordinates to Cartesian coordinates
+            const x = radius * Math.cos(controls.verticalRotation) * Math.cos(controls.horizontalRotation);
+            const y = radius * Math.sin(controls.verticalRotation);
+            const z = radius * Math.cos(controls.verticalRotation) * Math.sin(controls.horizontalRotation);
+            
+            camera.position.set(x, y, z);
+            camera.lookAt(scene.position);
+        }
+
+        // Initial call to set the camera position
+        updateCameraPosition();
+
+        // Render the scene
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+        });
+    </script>
+</body>
+</html>
