@@ -1,26 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CodePen CubeMap</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>CodePen - cubemap</title>
+  
+
 </head>
 <body>
-    <div id="textHolder" style="position:absolute;"></div>
-    <script async src="https://ga.jspm.io/npm:es-module-shims@1.6.3/dist/es-module-shims.js" crossorigin="anonymous"></script>
-    <script type="importmap">
-      {
-        "imports": {
-          "three": "https://unpkg.com/three@0.150.0/build/three.module.js",
-          "three/addons/": "https://unpkg.com/three@0.150.0/examples/jsm/"
-        }
-      }
-    </script>
-    <div id="three-container"></div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/controls/OrbitControls.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script>
-    <script src="script.js"></script>
+<!-- partial:index.partial.html -->
+<div id="textHolder" style="position:absolute;"></div>
+
+<script async src="https://ga.jspm.io/npm:es-module-shims@1.6.3/dist/es-module-shims.js" crossorigin="anonymous"></script>
+<script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.150.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.150.0/examples/jsm/"
+    }
+  }
+</script>
+<div id="three-container"></div>
+<!-- partial -->
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/three-js-csg/72.0.0/index.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/react-three-renderer/3.2.4/React3Renderer.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/controls/OrbitControls.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js'></script><script type="module" src="./script.js"></script>
+
 </body>
 </html>
