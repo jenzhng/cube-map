@@ -37,5 +37,5 @@ The application will be available at **`http://localhost:3000`**
 
 ## Usage
 1. Open the Application: Navigate to **`http://localhost:3000`** in your web browser to view the 3D cube map visualization.
-2. Interact with the Cube: Use the provided controls to adjust surface roughness and metallic values. Explore the cube map effect by interacting with the 3D cube.
+2. Interact with the Sphere: Use the provided controls to adjust surface roughness and metallic values of the sphere. Explore the cube map effect by interacting with the 3D sphere.
 
